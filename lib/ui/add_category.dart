@@ -1,5 +1,7 @@
 import 'dart:io';
 import 'package:dotted_border/dotted_border.dart';
+import 'package:ecommerce_admin/ApiFunctions/Api.dart';
+import 'package:ecommerce_admin/model/categories_model.dart';
 import 'package:ecommerce_admin/utils/colors_file.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
@@ -19,100 +21,140 @@ class _AddCategoryState extends State<AddCategory> {
       _image = image;
     });
   }
+  CategoriesModel categoriesModel;
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+  final GlobalKey<ScaffoldState> scafoldState = new GlobalKey<ScaffoldState>();
+  GlobalKey<FormState> formKey = GlobalKey<FormState>();
+  List<Success> categoryList = List();
 
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    Future.delayed(Duration(milliseconds: 0), () {
+    });
+
+//    showHud();
+  }
+
+
+  addToCartApi() {
+    setState(() {
+      Api(context).createCategory(_scaffoldKey).then((value) {
+        categoriesModel = value;
+        categoriesModel.success.forEach((element) {
+          setState(() {
+            categoryList.add(element);
+          });
+        });
+      });
+    });
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: _scaffoldKey,
       body: SafeArea(
         child: SingleChildScrollView(
-          child: Padding(
-            padding:const EdgeInsets.only(left: 21, top: 29, right: 21),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  "Upload Image",
-                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                ),
-                SizedBox(height: 16),
-                Text("Upload Category Image image",
-                    style:
-                    TextStyle(fontSize: 16, color: Colors.grey)),
-                SizedBox(height: 30),
-                CategoryImageDottedBorder(),
-                SizedBox(height: 55),
-                Column(
-                  crossAxisAlignment:
-                  CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      "Add Category Name",
+          child: Form(
+            key: formKey,
+            child: Padding(
+              padding:const EdgeInsets.only(left: 21, top: 29, right: 21),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    "Upload Image",
+                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                  ),
+                  SizedBox(height: 16),
+                  Text("Upload Category Image image",
                       style:
-                      TextStyle(color: Colors.black,fontSize: 20,),
-                    ),
-                    SizedBox(height: 10),
-                    SizedBox(
-                      width:
-                      MediaQuery.of(context).size.width ,
-                      child: TextFormField(
-                        style: TextStyle(color: whiteColor),
-                        cursorColor: primaryAppColor,
-                        decoration: InputDecoration(
-                            fillColor:
-                            Colors.grey,
-                            hintText: 'Category Name',
-                            hintStyle: TextStyle(
-                                color: Color(0xffb8c3cb))),
+                      TextStyle(fontSize: 16, color: Colors.grey)),
+                  SizedBox(height: 30),
+                  CategoryImageDottedBorder(),
+                  SizedBox(height: 55),
+                  Column(
+                    crossAxisAlignment:
+                    CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        "Add Category Name",
+                        style:
+                        TextStyle(color: Colors.black,fontSize: 20,),
                       ),
-                    ),
-                    SizedBox(height: 20),
-                    Text(
-                      "Add Category Price",
-                      style:
-                      TextStyle(color: Colors.black,fontSize: 20,),
-                    ),
-                    SizedBox(height: 10),
-                    SizedBox(
-                      width:
-                      MediaQuery.of(context).size.width ,
-                      child: TextFormField(
-                        style: TextStyle(color: whiteColor),
-                        cursorColor: primaryAppColor,
-                        decoration: InputDecoration(
-                            fillColor:
-                            Colors.grey,
-                            hintText: 'Category Price',
-                            hintStyle: TextStyle(
-                                color: Color(0xffb8c3cb))),
-                      ),)
-                  ],
-                ),
-                SizedBox(height: 60,),
-                Container(
-                  alignment: Alignment.center,
-                  padding: EdgeInsets.only(bottom: 21.0),
-                  child: ButtonTheme(
-                    minWidth: 280.0,
-                    height: 45.0,
-                    child: RaisedButton(
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(30.0),
-                      ),
-                      color: Colors.grey,
-                      child: Text(
-                        'Add',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 15,
-                          fontWeight: FontWeight.normal,
+                      SizedBox(height: 10),
+                      SizedBox(
+                        width:
+                        MediaQuery.of(context).size.width ,
+                        child: TextFormField(
+                          style: TextStyle(color: whiteColor),
+                          cursorColor: primaryAppColor,
+                          decoration: InputDecoration(
+                              fillColor:
+                              Colors.grey,
+                              hintText: 'Category Name',
+                              hintStyle: TextStyle(
+                                  color: Color(0xffb8c3cb))),
                         ),
                       ),
-                      onPressed: () {},
+                      SizedBox(height: 20),
+                      Text(
+                        "Add Category Price",
+                        style:
+                        TextStyle(color: Colors.black,fontSize: 20,),
+                      ),
+                      SizedBox(height: 10),
+                      SizedBox(
+                        width:
+                        MediaQuery.of(context).size.width ,
+                        child: TextFormField(
+                          style: TextStyle(color: whiteColor),
+                          cursorColor: primaryAppColor,
+                          decoration: InputDecoration(
+                              fillColor:
+                              Colors.grey,
+                              hintText: 'Category Price',
+                              hintStyle: TextStyle(
+                                  color: Color(0xffb8c3cb))),
+                        ),)
+                    ],
+                  ),
+                  SizedBox(height: 60,),
+                  Container(
+                    alignment: Alignment.center,
+                    padding: EdgeInsets.only(bottom: 21.0),
+                    child: ButtonTheme(
+                      minWidth: 280.0,
+                      height: 45.0,
+                      child: RaisedButton(
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(30.0),
+                        ),
+                        color: Colors.grey,
+                        child: Text(
+                          'Add',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 15,
+                            fontWeight: FontWeight.normal,
+                          ),
+                        ),
+                        onPressed: () {
+                          Api(context)
+                              .createCategory(scafoldState)
+                              .then((value) {
+                            if (value is CategoriesModel) {
+                              categoriesModel = value;
+                            }
+                          });
+                        },
+                      ),
                     ),
                   ),
-                ),
-              ],
-            )
+                ],
+              )
+            ),
           ),
         ),
       )
