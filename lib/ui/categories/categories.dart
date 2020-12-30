@@ -6,7 +6,7 @@ import 'package:ecommerce_admin/utils/navigator.dart';
 import 'package:flutter/material.dart';
 import 'package:xs_progress_hud/xs_progress_hud.dart';
 
-import '../../add_category.dart';
+import 'add_category.dart';
 
 class Categories extends StatefulWidget {
   @override
@@ -46,40 +46,19 @@ class _CategoriesState extends State<Categories> {
     return Scaffold(
       floatingActionButton: _buildFloatingButton(),
       key: _scaffoldKey,
+
       appBar: AppBar(
-        backgroundColor: whiteColor,
-        elevation: 0,
-        leading: Icon(
-          Icons.keyboard_backspace,
-          color: greyColorXd,
-        ),
-        actions: [
-          IconButton(
-            onPressed: () {},
-            icon: Icon(
-              Icons.search,
-              color: greyColorXd,
-            ),
-          ),
-          IconButton(
-            onPressed: () {},
-            icon: Icon(
-              Icons.shopping_cart,
-              color: greyColorXd,
-            ),
-          ),
-        ],
-      ),
+        backgroundColor: Colors.white,
+        iconTheme: IconThemeData(color: Colors.black),
+
+        centerTitle: true,title: Text("Categories",style: TextStyle(color: Colors.black),),),
+
       body: Padding(
         padding: const EdgeInsets.only(top: 20, left: 20, right: 20),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              "Categories",
-              style: TextStyle(
-                  color: blackColor, fontSize: 20, fontWeight: FontWeight.bold),
-            ),
+
             SizedBox(
               height: 30,
             ),

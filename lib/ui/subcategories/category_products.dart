@@ -2,6 +2,7 @@ import 'package:ecommerce_admin/ApiFunctions/Api.dart';
 import 'package:ecommerce_admin/add_product.dart';
 import 'package:ecommerce_admin/model/categories_model.dart'as categoryModel;
 import 'package:ecommerce_admin/model/category_products_model.dart' ;
+import 'package:ecommerce_admin/ui/categories/addImageToCategory.dart';
  import 'package:ecommerce_admin/ui/product_details/product_details.dart';
 import 'package:ecommerce_admin/utils/colors_file.dart';
 import 'package:ecommerce_admin/utils/navigator.dart';
@@ -34,7 +35,7 @@ class _CategoryProductsState extends State<CategoryProducts> {
 
   gettingData() {
     setState(() {
-      Api(context).categoryProductsApi(_scaffoldKey).then((value) {
+      Api(context).categoryProductsApi(_scaffoldKey,widget.success.id).then((value) {
         productsModel = value;
         productsModel.success.data.forEach((element) {
           setState(() {
@@ -60,7 +61,15 @@ class _CategoryProductsState extends State<CategoryProducts> {
           icon: Icon(
             Icons.keyboard_backspace,
           ),
+
         ),
+        actions: [InkWell(
+
+            onTap: (){
+              navigateAndKeepStack(context, AddImage(true,widget.success.id));
+
+            },
+            child: Icon(Icons.image))],
         title: Text("Sub-category"),
         centerTitle: true,
       ),
@@ -88,7 +97,8 @@ class _CategoryProductsState extends State<CategoryProducts> {
   Widget Products(int index) {
     return ListTile(
       onTap: () {
-        navigateAndKeepStack(context, CategoryDetails(categoryProductsList[index]));
+        // navigateAndKeepStack(context, CategoryDetails(categoryProductsList[index]));
+        navigateAndKeepStack(context, AddImage(false,categoryProductsList[index].id));
       },
       leading: Container(
         height: 80,

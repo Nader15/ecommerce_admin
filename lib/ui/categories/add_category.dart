@@ -16,36 +16,8 @@ class AddCategory extends StatefulWidget {
 
 class _AddCategoryState extends State<AddCategory> {
 
-  File _image;
-  FormData formData = FormData();
-  Future getImage() async {
-    var image = await ImagePicker.pickImage(source: ImageSource.gallery);
-    setState(() {
-      _image = image;
-    });
-  }
 
-  Future uploadCategoryImageToApi(
-      ) async {
-    try {
-      var fileName = _image.path.split('/').last;
 
-      var headers = {
-        'content-type': 'application/json',
-        'accept': 'application/json',
-      };
-
-      final formData = FormData.fromMap({
-
-        "profile_picture" :  MultipartFile.fromFile(_image.path,filename: "anyname.jpg"),
-      });
-      final response = await Dio().post("https://cafeshs.herokuapp.com/api/categories/set/logo/1",
-          data: formData, options: Options(method: "POST", headers: headers));
-      return CategoriesModel.fromJson(response.data);
-    } on DioError catch (e) {
-      return e.error;
-    }
-  }
 
   CategoriesModel categoriesModel;
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
@@ -92,17 +64,8 @@ class _AddCategoryState extends State<AddCategory> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    "Upload Image",
-                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                  ),
-                  SizedBox(height: 16),
-                  Text("Upload Category Image image",
-                      style:
-                      TextStyle(fontSize: 16, color: Colors.grey)),
-                  SizedBox(height: 30),
-                  CategoryImageDottedBorder(),
-                  SizedBox(height: 55),
+
+                   SizedBox(height: 55),
                   Column(
                     crossAxisAlignment:
                     CrossAxisAlignment.start,
@@ -177,7 +140,7 @@ class _AddCategoryState extends State<AddCategory> {
                         onPressed: () {
                           _validateInputs();
                           if (formKey.currentState.validate()) {
-                            uploadCategoryImageToApi();
+
                             Api(context)
                                 .createCategory(scafoldState,name.text,description.text)
                                 .then((value) {
@@ -201,61 +164,6 @@ class _AddCategoryState extends State<AddCategory> {
     );
   }
 
-  DottedBorder CategoryImageDottedBorder(){
-    return DottedBorder(
-        radius: Radius.circular(30),
-        color: Colors.grey,
-        dashPattern: [5,5],
-        strokeCap: StrokeCap.round
-        ,
-        child: _image == null ?
-        Container(
-          height: 199,
-          width: MediaQuery.of(context).size.width,
-          decoration: BoxDecoration(
-              borderRadius: BorderRadius.all(Radius.circular(30))
-          ),
-          child: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: [
-                Text(
-                  "Recommended Size (500*500)",
-                  style: TextStyle(color: Colors.grey),
-                ),
-                Text(
-                  "No images added yet !",
-                  style: TextStyle(color: Colors.grey),
-                ),
-                RaisedButton(
-                  elevation: 0,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(18.0),
-                  ),
-                  color: Colors.blue[50],
-                  child: Text(
-                    'Select Image',
-                    style: TextStyle(
-                      color: Color(0xff1d4ca1),
-                      fontSize: 15,
-                      fontWeight: FontWeight.normal,
-                    ),
-                  ),
-                  onPressed: (){
-                    getImage();
-                  },
-                ),
-              ],
-            ),
-          ),
-        ) : Container(
-          height: 199,
-          width: MediaQuery.of(context).size.width,
-          child: Image.file(_image),
-        ),
-    );
-  }
 
   void _validateInputs() {
     if (formKey.currentState.validate()) {
