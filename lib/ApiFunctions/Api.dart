@@ -75,13 +75,13 @@ class Api {
   }
 
   Future createProduct(GlobalKey<ScaffoldState> _scaffoldKey, String name,
-      String description, String amount, String price,int categoryId) async {
+      String description, String price,int categoryId) async {
     XsProgressHud.show(context);
     final String apiUrl = baseUrl + createProductLink;
     var data = {
       "name": name,
       "description": description,
-      "amount": amount,
+      "amount": "9999999",
       "price": price,
       "category_id": categoryId
     };
@@ -159,8 +159,8 @@ class Api {
       GlobalKey<ScaffoldState> _scaffoldKey, int categoryId) async {
     XsProgressHud.show(context);
     print("baseUrl::: ${baseUrl + createProducts + "${categoryId}"}");
-    final String completeUrl = baseUrl + products;
-    // final String completeUrl =  baseUrl + createProducts+"${categoryId}";
+    // final String completeUrl = baseUrl + products;
+    final String completeUrl =  baseUrl + createProducts+"${categoryId}";
 
     final response = await http.post(completeUrl,
         headers: {
