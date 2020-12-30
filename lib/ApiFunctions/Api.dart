@@ -51,6 +51,8 @@ class Api {
     }
   }
 
+
+
   Future createProduct(GlobalKey<ScaffoldState> _scaffoldKey,String name, String description,String amount, String price) async {
     XsProgressHud.show(context);
     final String apiUrl = baseUrl + createProductLink;

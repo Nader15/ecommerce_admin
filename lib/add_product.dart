@@ -76,16 +76,16 @@ class _AddProductState extends State<AddProduct> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      // Text(
-                      //   "Upload Image",
-                      //   style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                      // ),
-                      // SizedBox(height: 16),
-                      // Text("Upload Category Image image",
-                      //     style:
-                      //     TextStyle(fontSize: 16, color: Colors.grey)),
-                      // SizedBox(height: 30),
-                      // CategoryImageDottedBorder(),
+                      Text(
+                        "Upload Image",
+                        style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                      ),
+                      SizedBox(height: 16),
+                      Text("Upload Category Image image",
+                          style:
+                          TextStyle(fontSize: 16, color: Colors.grey)),
+                      SizedBox(height: 30),
+                      CategoryImageDottedBorder(),
                       SizedBox(height: 55),
                       Column(
                         crossAxisAlignment:
