@@ -1,12 +1,15 @@
-class CartModel {
+class CartContentModel {
   List<Success> success;
   int code;
 
-  CartModel({this.success, this.code});
+  CartContentModel({this.success, this.code});
 
-  CartModel.fromJson(Map<String, dynamic> json) {
+  CartContentModel.fromJson(Map<String, dynamic> json) {
     if (json['success'] != null) {
       success = new List<Success>();
+      json['success'].forEach((v) {
+        success.add(new Success.fromJson(v));
+      });
     }
     code = json['code'];
   }
@@ -67,15 +70,15 @@ class Success {
 
 class Product {
   int id;
-  Null createdAt;
-  Null updatedAt;
+  dynamic createdAt;
+  String updatedAt;
   String name;
   String description;
   int sold;
   int amount;
   String price;
-  Null ofer;
-  Null photo;
+  dynamic ofer;
+  dynamic photo;
   String totalRate;
   int totalNumberRates;
   int categoryId;

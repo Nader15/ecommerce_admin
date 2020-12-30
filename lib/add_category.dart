@@ -2,7 +2,9 @@ import 'dart:io';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:ecommerce_admin/ApiFunctions/Api.dart';
 import 'package:ecommerce_admin/model/categories_model.dart';
+import 'package:ecommerce_admin/ui/categories/categories.dart';
 import 'package:ecommerce_admin/utils/colors_file.dart';
+import 'package:ecommerce_admin/utils/navigator.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
@@ -40,7 +42,7 @@ class _AddCategoryState extends State<AddCategory> {
 
   addToCartApi() {
     setState(() {
-      Api(context).createCategory(_scaffoldKey).then((value) {
+      Api(context).createCategory(_scaffoldKey,name.text,description.text).then((value) {
         categoriesModel = value;
         categoriesModel.success.forEach((element) {
           setState(() {
@@ -50,6 +52,9 @@ class _AddCategoryState extends State<AddCategory> {
       });
     });
   }
+  bool _autoValidate = false;
+  var name = TextEditingController();
+  var description = TextEditingController();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -63,16 +68,16 @@ class _AddCategoryState extends State<AddCategory> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    "Upload Image",
-                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                  ),
-                  SizedBox(height: 16),
-                  Text("Upload Category Image image",
-                      style:
-                      TextStyle(fontSize: 16, color: Colors.grey)),
-                  SizedBox(height: 30),
-                  CategoryImageDottedBorder(),
+                  // Text(
+                  //   "Upload Image",
+                  //   style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                  // ),
+                  // SizedBox(height: 16),
+                  // Text("Upload Category Image image",
+                  //     style:
+                  //     TextStyle(fontSize: 16, color: Colors.grey)),
+                  // SizedBox(height: 30),
+                  // CategoryImageDottedBorder(),
                   SizedBox(height: 55),
                   Column(
                     crossAxisAlignment:
@@ -85,22 +90,24 @@ class _AddCategoryState extends State<AddCategory> {
                       ),
                       SizedBox(height: 10),
                       SizedBox(
-                        width:
-                        MediaQuery.of(context).size.width ,
+                        width: MediaQuery.of(context).size.width,
                         child: TextFormField(
-                          style: TextStyle(color: whiteColor),
+                          style: TextStyle(color: blackColor),
                           cursorColor: primaryAppColor,
+                          controller: name,
+                          keyboardType: TextInputType.name,
+                          validator: validateName,
                           decoration: InputDecoration(
                               fillColor:
                               Colors.grey,
                               hintText: 'Category Name',
                               hintStyle: TextStyle(
-                                  color: Color(0xffb8c3cb))),
+                                  color: Color(0xffb8c3cb),),),
                         ),
                       ),
                       SizedBox(height: 20),
                       Text(
-                        "Add Category Price",
+                        "Add Category Description",
                         style:
                         TextStyle(color: Colors.black,fontSize: 20,),
                       ),
@@ -109,12 +116,15 @@ class _AddCategoryState extends State<AddCategory> {
                         width:
                         MediaQuery.of(context).size.width ,
                         child: TextFormField(
-                          style: TextStyle(color: whiteColor),
+                          style: TextStyle(color: blackColor),
                           cursorColor: primaryAppColor,
+                          controller: description,
+                          keyboardType: TextInputType.name,
+                          validator: validateDescription,
                           decoration: InputDecoration(
                               fillColor:
                               Colors.grey,
-                              hintText: 'Category Price',
+                              hintText: 'Category Description',
                               hintStyle: TextStyle(
                                   color: Color(0xffb8c3cb))),
                         ),)
@@ -133,7 +143,7 @@ class _AddCategoryState extends State<AddCategory> {
                         ),
                         color: Colors.grey,
                         child: Text(
-                          'Add',
+                          'Add Category',
                           style: TextStyle(
                             color: Colors.white,
                             fontSize: 15,
@@ -141,13 +151,18 @@ class _AddCategoryState extends State<AddCategory> {
                           ),
                         ),
                         onPressed: () {
-                          Api(context)
-                              .createCategory(scafoldState)
-                              .then((value) {
-                            if (value is CategoriesModel) {
-                              categoriesModel = value;
-                            }
-                          });
+                          _validateInputs();
+                          if (formKey.currentState.validate()) {
+                            Api(context)
+                                .createCategory(scafoldState,name.text,description.text)
+                                .then((value) {
+                              if (value is CategoriesModel) {
+                                categoriesModel = value;
+                              }
+                            });
+                            Navigator.pop(context);
+                            navigateAndKeepStack(context, Categories());
+                          }
                         },
                       ),
                     ),
@@ -215,6 +230,29 @@ class _AddCategoryState extends State<AddCategory> {
           child: Image.file(_image),
         ),
     );
+  }
+
+  void _validateInputs() {
+    if (formKey.currentState.validate()) {
+      formKey.currentState.save();
+    } else {
+      setState(() {
+        _autoValidate = true;
+      });
+    }
+  }
+
+  String validateName(String value) {
+    if (value.length == 0)
+      return 'enter Category name';
+    else
+      return null;
+  }
+  String validateDescription(String value) {
+    if (value.length == 0)
+      return 'enter Category Description';
+    else
+      return null;
   }
 
 }

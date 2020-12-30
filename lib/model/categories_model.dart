@@ -8,9 +8,9 @@ class CategoriesModel {
   CategoriesModel.fromJson(Map<String, dynamic> json) {
     if (json['success'] != null) {
       success = new List<Success>();
-      // json['success'].forEach((v) {
-      //   success.add(new Success.fromJson(v));
-      // });
+      json['success'].forEach((v) {
+        success.add(new Success.fromJson(v));
+      });
     }
     code = json['code'];
   }

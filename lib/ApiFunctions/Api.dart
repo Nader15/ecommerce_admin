@@ -1,7 +1,8 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:ecommerce_admin/error401_page.dart';
-import 'package:ecommerce_admin/model/cart_model.dart';
+import 'package:ecommerce_admin/model/add_to_cart_model.dart';
+import 'package:ecommerce_admin/model/cart_content_model.dart';
 import 'package:ecommerce_admin/model/categories_model.dart';
 import 'package:ecommerce_admin/model/category_products_model.dart';
 import 'package:ecommerce_admin/utils/custom_widgets/cusstom_snackBar.dart';
@@ -15,17 +16,20 @@ class Api {
   final String createCategories = "categories";
   final String createProducts = "products";
   final String createCategoryLink = "categories/create";
+  final String createProductLink = "products/create";
+  final String addToCartLink = "add/cart";
+  final String cartLink = "cart";
 
   BuildContext context;
   Api(@required this.context);
 
 
-  Future createCategory(GlobalKey<ScaffoldState> _scaffoldKey) async {
+  Future createCategory(GlobalKey<ScaffoldState> _scaffoldKey,String name, String description,) async {
     XsProgressHud.show(context);
     final String apiUrl = baseUrl + createCategoryLink;
     var data = {
-      "name": "Nader",
-      "description": "Test Category"
+      "name": name,
+      "description": description
     };
     var userToJson = json.encode(data);
     final response = await http.post(
@@ -36,11 +40,66 @@ class Api {
     Map<String, dynamic> dataContent = json.decode(response.body);
     XsProgressHud.hide();
     if (response.statusCode == 200) {
-      CustomSnackBar(_scaffoldKey,
-          json.decode(response.body).toString());
+      // CustomSnackBar(_scaffoldKey,
+      //     json.decode(response.body).toString());
       print(json.decode(response.body));
       return CategoriesModel.fromJson(dataContent);
     } else {
+      CustomSnackBar(_scaffoldKey,
+          json.decode(response.body).toString());
+      return false;
+    }
+  }
+
+  Future createProduct(GlobalKey<ScaffoldState> _scaffoldKey,String name, String description,String amount, String price) async {
+    XsProgressHud.show(context);
+    final String apiUrl = baseUrl + createProductLink;
+    var data = {
+        "name": name,
+        "description": description,
+        "amount": amount,
+        "price": price,
+        "category_id": "31"
+    };
+    var userToJson = json.encode(data);
+    final response = await http.post(
+      apiUrl,
+      headers: {"Content-Type": "application/json"},
+      body: userToJson,
+    );
+    Map<String, dynamic> dataContent = json.decode(response.body);
+    XsProgressHud.hide();
+    if (response.statusCode == 200) {
+      // CustomSnackBar(_scaffoldKey,
+      //     json.decode(response.body).toString());
+      print(json.decode(response.body));
+      return ProductsModel.fromJson(dataContent);
+    } else {
+      CustomSnackBar(_scaffoldKey,
+          json.decode(response.body).toString());
+      return false;
+    }
+  }
+
+  Future cartContent(GlobalKey<ScaffoldState> _scaffoldKey) async {
+    XsProgressHud.show(context);
+    final String apiUrl = baseUrl + cartLink;
+    var data = {
+      "user_id": "12321"
+    };
+    var userToJson = json.encode(data);
+    final response = await http.post(
+      apiUrl,
+      headers: {"Content-Type": "application/json"},
+      body: userToJson,
+    );
+    Map<String, dynamic> dataContent = json.decode(response.body);
+    XsProgressHud.hide();
+    if (response.statusCode == 200) {
+      print( "body :"+json.decode(response.body).toString());
+      return CartContentModel.fromJson(dataContent);
+    } else {
+      print( "body :"+json.decode(response.body).toString());
       CustomSnackBar(_scaffoldKey,
           json.decode(response.body).toString());
       return false;
@@ -101,6 +160,34 @@ class Api {
       return false;
     }
 
+  }
+
+  Future addToCart(GlobalKey<ScaffoldState> _scaffoldKey) async {
+    XsProgressHud.show(context);
+    final String apiUrl = baseUrl + addToCartLink;
+    var data = {
+      "user_id": "12321",
+      "product_id": 1,
+      "amount": 2
+    };
+    var userToJson = json.encode(data);
+    final response = await http.post(
+      apiUrl,
+      headers: {"Content-Type": "application/json"},
+      body: userToJson,
+    );
+    Map<String, dynamic> dataContent = json.decode(response.body);
+    XsProgressHud.hide();
+    if (response.statusCode == 200) {
+      CustomSnackBar(_scaffoldKey,
+          json.decode(response.body).toString());
+      print(json.decode(response.body));
+      return AddToCartModel.fromJson(dataContent);
+    } else {
+      CustomSnackBar(_scaffoldKey,
+          json.decode(response.body).toString());
+      return false;
+    }
   }
 
 }
