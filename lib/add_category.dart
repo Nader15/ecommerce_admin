@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:dio/dio.dart';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:ecommerce_admin/ApiFunctions/Api.dart';
 import 'package:ecommerce_admin/model/categories_model.dart';
@@ -16,13 +17,36 @@ class AddCategory extends StatefulWidget {
 class _AddCategoryState extends State<AddCategory> {
 
   File _image;
-
+  FormData formData = FormData();
   Future getImage() async {
     var image = await ImagePicker.pickImage(source: ImageSource.gallery);
     setState(() {
       _image = image;
     });
   }
+
+  Future uploadCategoryImageToApi(
+      ) async {
+    try {
+      var fileName = _image.path.split('/').last;
+
+      var headers = {
+        'content-type': 'application/json',
+        'accept': 'application/json',
+      };
+
+      final formData = FormData.fromMap({
+
+        "profile_picture" :  MultipartFile.fromFile(_image.path,filename: "anyname.jpg"),
+      });
+      final response = await Dio().post("https://cafeshs.herokuapp.com/api/categories/set/logo/1",
+          data: formData, options: Options(method: "POST", headers: headers));
+      return CategoriesModel.fromJson(response.data);
+    } on DioError catch (e) {
+      return e.error;
+    }
+  }
+
   CategoriesModel categoriesModel;
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   final GlobalKey<ScaffoldState> scafoldState = new GlobalKey<ScaffoldState>();
@@ -68,16 +92,16 @@ class _AddCategoryState extends State<AddCategory> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // Text(
-                  //   "Upload Image",
-                  //   style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                  // ),
-                  // SizedBox(height: 16),
-                  // Text("Upload Category Image image",
-                  //     style:
-                  //     TextStyle(fontSize: 16, color: Colors.grey)),
-                  // SizedBox(height: 30),
-                  // CategoryImageDottedBorder(),
+                  Text(
+                    "Upload Image",
+                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                  ),
+                  SizedBox(height: 16),
+                  Text("Upload Category Image image",
+                      style:
+                      TextStyle(fontSize: 16, color: Colors.grey)),
+                  SizedBox(height: 30),
+                  CategoryImageDottedBorder(),
                   SizedBox(height: 55),
                   Column(
                     crossAxisAlignment:
@@ -153,6 +177,7 @@ class _AddCategoryState extends State<AddCategory> {
                         onPressed: () {
                           _validateInputs();
                           if (formKey.currentState.validate()) {
+                            uploadCategoryImageToApi();
                             Api(context)
                                 .createCategory(scafoldState,name.text,description.text)
                                 .then((value) {
