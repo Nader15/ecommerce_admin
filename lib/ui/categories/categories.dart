@@ -2,8 +2,10 @@ import 'package:ecommerce_admin/ApiFunctions/Api.dart';
 import 'package:ecommerce_admin/model/categories_model.dart' as category;
  import 'package:ecommerce_admin/ui/subcategories/category_products.dart';
 import 'package:ecommerce_admin/utils/colors_file.dart';
+import 'package:ecommerce_admin/utils/global_vars.dart';
 import 'package:ecommerce_admin/utils/navigator.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:xs_progress_hud/xs_progress_hud.dart';
 
 import 'add_category.dart';
@@ -37,52 +39,128 @@ class _CategoriesState extends State<Categories> {
             categoriesList.add(element);
           });
         });
+        categoriesList=categoriesList.reversed.toList();
       });
     });
   }
-
+  Future<bool> onWillPop(BuildContext context) async {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        content: Container(
+          height: 120,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: <Widget>[
+              ListTile(
+                title: Text(
+                 "Are you sure to logOut",
+                  style: TextStyle(fontFamily: "BoutrosAsma_Regular"),
+                  textAlign: TextAlign.center,
+                ),
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: <Widget>[
+                  GestureDetector(
+                    child: Container(
+                        padding: EdgeInsets.only(
+                            left: 20, right: 20, top: 5, bottom: 5),
+                        decoration: BoxDecoration(
+                          color: Colors.red,
+                          borderRadius: BorderRadius.all(Radius.circular(12.0)),
+                          border: Border.all(
+                              width: 1,
+                              color: Colors
+                                  .grey //                   <--- border width here
+                          ),
+                        ),
+                        child: Text(
+                          "Exit",
+                          style: TextStyle(color: Colors.white),
+                        )),
+                    onTap: () {
+                      SystemChannels.platform
+                          .invokeMethod('SystemNavigator.pop');
+                    },
+                  ),
+                  GestureDetector(
+                    child: Container(
+                        padding: EdgeInsets.only(
+                            left: 20, right: 20, top: 5, bottom: 5),
+                        decoration: BoxDecoration(
+                          color: Colors.green,
+                          borderRadius: BorderRadius.all(Radius.circular(12.0)),
+                          border: Border.all(
+                              width: 1,
+                              color: Colors
+                                  .grey //                   <--- border width here
+                          ),
+                        ),
+                        child: Text(
+                          "Cancel",
+                          style: TextStyle(color: Colors.white),
+                        )),
+                    onTap: () {
+                      print('Tappped');
+                      Navigator.of(context).pop();
+                    },
+                  ),
+                ],
+              )
+            ],
+          ),
+        ),
+      ),
+    );
+  }
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      floatingActionButton: _buildFloatingButton(),
-      key: _scaffoldKey,
+    return WillPopScope(
+      onWillPop: () => onWillPop(context),
 
-      appBar: AppBar(
-        backgroundColor: Colors.white,
-        iconTheme: IconThemeData(color: Colors.black),
+      child: Scaffold(
+        floatingActionButton: _buildFloatingButton(),
+        key: _scaffoldKey,
 
-        centerTitle: true,title: Text("Categories",style: TextStyle(color: Colors.black),),),
+        appBar: AppBar(
+          backgroundColor: Colors.white,
+          iconTheme: IconThemeData(color: Colors.black),
 
-      body: Padding(
-        padding: const EdgeInsets.only(top: 20, left: 20, right: 20),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
+          centerTitle: true,title: Text("Categories",style: TextStyle(color: Colors.black),),),
 
-            SizedBox(
-              height: 30,
-            ),
-            categoriesList.length == 0
-                ? Center(
-                    child: Container(
-                      child: Text("No data found"),
-                    ),
-                  )
-                : Expanded(
-                    child: GridView.builder(
-                      itemCount: categoriesList.length,
-                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 2,
-                        childAspectRatio: 0.70,
-                        mainAxisSpacing: 0.3,
-                        crossAxisSpacing: 20,
+        body: Padding(
+          padding: const EdgeInsets.only(top: 20, left: 20, right: 20),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+
+              SizedBox(
+                height: 30,
+              ),
+              categoriesList.length == 0
+                  ? Center(
+                      child: Container(
+                        child: Text("No data found"),
                       ),
-                      itemBuilder: (context, index) {
-                        return Category(index);
-                      },
+                    )
+                  : Expanded(
+                      child: GridView.builder(
+                        itemCount: categoriesList.length,
+                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 2,
+                          childAspectRatio: 0.70,
+                          mainAxisSpacing: 0.3,
+                          crossAxisSpacing: 20,
+                        ),
+                        itemBuilder: (context, index) {
+                          return Category(index);
+                        },
+                      ),
                     ),
-                  ),
-          ],
+            ],
+          ),
         ),
       ),
     );
@@ -93,7 +171,7 @@ class _CategoriesState extends State<Categories> {
       onPressed: (){
         navigateAndKeepStack(context,AddCategory());
       },
-      color: Colors.blue,
+      color: Colors.green,
       elevation: 0,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(30.0),
@@ -127,7 +205,11 @@ class _CategoriesState extends State<Categories> {
                 borderRadius: BorderRadius.circular(15),
                 image: DecorationImage(
                   image: NetworkImage(
-                      "https://forums.oscommerce.com/uploads/monthly_2017_12/C_member_309126.png"),
+                      categoriesList[index].logo==null?
+                      "https://forums.oscommerce.com/uploads/monthly_2017_12/C_member_309126.png"
+
+                  : dataBaseUrl+  categoriesList[index].logo
+                  ),
                   fit: BoxFit.cover,
                 )),
           ),

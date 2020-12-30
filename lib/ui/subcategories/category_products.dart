@@ -1,10 +1,11 @@
 import 'package:ecommerce_admin/ApiFunctions/Api.dart';
 import 'package:ecommerce_admin/add_product.dart';
-import 'package:ecommerce_admin/model/categories_model.dart'as categoryModel;
-import 'package:ecommerce_admin/model/category_products_model.dart' ;
+import 'package:ecommerce_admin/model/categories_model.dart' as categoryModel;
+import 'package:ecommerce_admin/model/category_products_model.dart';
 import 'package:ecommerce_admin/ui/categories/addImageToCategory.dart';
- import 'package:ecommerce_admin/ui/product_details/product_details.dart';
+import 'package:ecommerce_admin/ui/product_details/product_details.dart';
 import 'package:ecommerce_admin/utils/colors_file.dart';
+import 'package:ecommerce_admin/utils/global_vars.dart';
 import 'package:ecommerce_admin/utils/navigator.dart';
 import 'package:flutter/material.dart';
 
@@ -35,13 +36,17 @@ class _CategoryProductsState extends State<CategoryProducts> {
 
   gettingData() {
     setState(() {
-      Api(context).categoryProductsApi(_scaffoldKey,widget.success.id).then((value) {
+      Api(context)
+          .categoryProductsApi(_scaffoldKey, widget.success.id)
+          .then((value) {
         productsModel = value;
         productsModel.success.data.forEach((element) {
           setState(() {
             categoryProductsList.add(element);
           });
         });
+        categoryProductsList=categoryProductsList.reversed.toList();
+
       });
     });
   }
@@ -49,48 +54,57 @@ class _CategoryProductsState extends State<CategoryProducts> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      floatingActionButton:  _buildFloatingButton(),
-      backgroundColor: Colors.grey,
+      floatingActionButton: _buildFloatingButton(),
       appBar: AppBar(
-        backgroundColor: Colors.grey,
+        iconTheme: IconThemeData(color: Colors.black),
+        backgroundColor: Colors.white,
         elevation: 0,
         leading: IconButton(
-          onPressed:(){
+          onPressed: () {
             Navigator.pop(context);
           },
           icon: Icon(
             Icons.keyboard_backspace,
+            color: Colors.black,
           ),
-
         ),
-        actions: [InkWell(
-
-            onTap: (){
-              navigateAndKeepStack(context, AddImage(true,widget.success.id));
-
-            },
-            child: Icon(Icons.image))],
-        title: Text("Sub-category"),
+        actions: [
+          InkWell(
+              onTap: () {
+                navigateAndKeepStack(
+                    context, AddImage(true, widget.success.id));
+              },
+              child: Container(
+                  padding: EdgeInsets.only(right: 20),
+                  child: Icon(
+                    Icons.image,
+                    color: Colors.green,
+                  )))
+        ],
+        title: Text(
+          "Products",
+          style: TextStyle(color: Colors.black),
+        ),
         centerTitle: true,
       ),
       body: categoryProductsList.length == 0
           ? Center(child: Container(child: Text("No data found")))
           : Container(
-            width: MediaQuery.of(context).size.width,
-            height: MediaQuery.of(context).size.height,
-            child: GridView.builder(
-              itemCount: categoryProductsList.length,
-              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 1,
-                childAspectRatio: 4,
-                mainAxisSpacing: 10,
-                crossAxisSpacing: .5,
+              width: MediaQuery.of(context).size.width,
+              height: MediaQuery.of(context).size.height,
+              child: GridView.builder(
+                itemCount: categoryProductsList.length,
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 1,
+                  childAspectRatio: 4,
+                  mainAxisSpacing: 10,
+                  crossAxisSpacing: .5,
+                ),
+                itemBuilder: (context, index) {
+                  return Products(index);
+                },
               ),
-              itemBuilder: (context, index) {
-                return Products(index);
-              },
             ),
-          ),
     );
   }
 
@@ -98,7 +112,8 @@ class _CategoryProductsState extends State<CategoryProducts> {
     return ListTile(
       onTap: () {
         // navigateAndKeepStack(context, CategoryDetails(categoryProductsList[index]));
-        navigateAndKeepStack(context, AddImage(false,categoryProductsList[index].id));
+        navigateAndKeepStack(
+            context, AddImage(false, categoryProductsList[index].id));
       },
       leading: Container(
         height: 80,
@@ -107,23 +122,28 @@ class _CategoryProductsState extends State<CategoryProducts> {
             borderRadius: BorderRadius.circular(5),
             image: DecorationImage(
               image: NetworkImage(
-                  "https://forums.oscommerce.com/uploads/monthly_2017_12/C_member_309126.png"),
+
+                  categoryProductsList[index].photo==null?
+                  "https://forums.oscommerce.com/uploads/monthly_2017_12/C_member_309126.png"
+
+                      : dataBaseUrl+  categoryProductsList[index].photo
+                  ),
               fit: BoxFit.cover,
             )),
       ),
       title: Text(
         "${categoryProductsList[index].name}",
-        style: TextStyle(fontSize: 18, color: whiteColor),
+        style: TextStyle(fontSize: 18, color: black),
       ),
       subtitle: Row(
         children: [
           Text(
             "Price ",
-            style: TextStyle(fontSize: 18, color: whiteColor),
+            style: TextStyle(fontSize: 18, color: black),
           ),
           Text(
-            "\$ " + "${categoryProductsList[index].price}",
-            style: TextStyle(fontSize: 20, color: whiteColor),
+            "" + "${categoryProductsList[index].price}",
+            style: TextStyle(fontSize: 20, color: black),
           ),
         ],
       ),
@@ -134,20 +154,20 @@ class _CategoryProductsState extends State<CategoryProducts> {
             borderRadius: BorderRadius.circular(5),
             border: Border.all(color: whiteColor)),
         child: Icon(
-          Icons.shopping_cart,
-          color: whiteColor,
+          Icons.image,
+          color: Colors.green,
           size: 25,
         ),
       ),
     );
   }
 
-  Widget _buildFloatingButton(){
+  Widget _buildFloatingButton() {
     return RaisedButton(
-      onPressed: (){
-        navigateAndKeepStack(context,AddProduct());
+      onPressed: () {
+        navigateAndKeepStack(context, AddProduct(widget.success.id));
       },
-      color: Colors.blue,
+      color: Colors.green,
       elevation: 0,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(30.0),
@@ -155,11 +175,15 @@ class _CategoryProductsState extends State<CategoryProducts> {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[
-          Text('Add Product',style: TextStyle(color: Colors.white),
+          Text(
+            'Add Product',
+            style: TextStyle(color: Colors.white),
           ),
           SizedBox(width: 10),
           Icon(
-            Icons.add,size: 25.0,color:Colors.white,
+            Icons.add,
+            size: 25.0,
+            color: Colors.white,
           )
         ],
       ),

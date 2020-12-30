@@ -86,12 +86,9 @@ class _AddImageState extends State<AddImage> {
         backgroundColor: Colors.white,
         iconTheme: IconThemeData(color: Colors.black),
 
-        centerTitle: true,title: Text("add image",style: TextStyle(color: Colors.black),),),
+        centerTitle: true,title: Text("Upload Image",style: TextStyle(color: Colors.black),),),
       body: Container(child: Column(children: [
-        Text(
-          "Upload Image",
-          style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-        ),
+
         SizedBox(height: 16),
         Text("Upload Category Image image",
             style:
@@ -99,7 +96,7 @@ class _AddImageState extends State<AddImage> {
         SizedBox(height: 30),
         CategoryImageDottedBorder(),
 
-
+        SizedBox(height: 30),
         Container(
           alignment: Alignment.center,
           padding: EdgeInsets.only(bottom: 21.0),
@@ -122,7 +119,7 @@ class _AddImageState extends State<AddImage> {
               onPressed: () {
 
            Api(context).uploadCategoryImageToApi(_image, widget.fromCategory?"categories":"products", widget.id).then((value) {
-             navigateAndKeepStack(context,Categories());
+             navigateAndClearStack(context,Categories());
 
            });
               },

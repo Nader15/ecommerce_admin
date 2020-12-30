@@ -36,18 +36,7 @@ class _AddCategoryState extends State<AddCategory> {
   }
 
 
-  addToCartApi() {
-    setState(() {
-      Api(context).createCategory(_scaffoldKey,name.text,description.text).then((value) {
-        categoriesModel = value;
-        categoriesModel.success.forEach((element) {
-          setState(() {
-            categoryList.add(element);
-          });
-        });
-      });
-    });
-  }
+
   bool _autoValidate = false;
   var name = TextEditingController();
   var description = TextEditingController();
@@ -55,6 +44,26 @@ class _AddCategoryState extends State<AddCategory> {
   Widget build(BuildContext context) {
     return Scaffold(
       key: _scaffoldKey,
+        appBar: AppBar(
+          iconTheme: IconThemeData(color: Colors.black),
+          backgroundColor: Colors.white,
+          elevation: 0,
+          leading: IconButton(
+            onPressed: () {
+              Navigator.pop(context);
+            },
+            icon: Icon(
+              Icons.keyboard_backspace,
+              color: Colors.black,
+            ),
+          ),
+
+          title: Text(
+            "Add Category",
+            style: TextStyle(color: Colors.black),
+          ),
+          centerTitle: true,
+        ),
       body: SafeArea(
         child: SingleChildScrollView(
           child: Form(
@@ -144,12 +153,10 @@ class _AddCategoryState extends State<AddCategory> {
                             Api(context)
                                 .createCategory(scafoldState,name.text,description.text)
                                 .then((value) {
-                              if (value is CategoriesModel) {
-                                categoriesModel = value;
-                              }
+                              navigateAndClearStack(context, Categories());
                             });
-                            Navigator.pop(context);
-                            navigateAndKeepStack(context, Categories());
+
+
                           }
                         },
                       ),

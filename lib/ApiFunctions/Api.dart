@@ -28,7 +28,7 @@ class Api {
   Future uploadCategoryImageToApi(File fileName, String urlData, int id) async {
     print("${"$baseUrl$urlData/set/logo/$id"}");
     print("fileName:: ${fileName.path}");
-
+    XsProgressHud.show(context);
     Dio dio = Dio();
     FormData formData = FormData.fromMap({
       "logo": await MultipartFile.fromFile("${fileName.path}",
@@ -36,6 +36,7 @@ class Api {
     });
     var response =
         await dio.post("$baseUrl$urlData/set/logo/$id", data: formData);
+    XsProgressHud.hide();
     // final response = await Dio().post("$baseUrl$urlData/set/logo/$id",
     //     data: formData, options: Options(method: "POST", headers: headers));
 
@@ -60,11 +61,13 @@ class Api {
     );
     Map<String, dynamic> dataContent = json.decode(response.body);
     XsProgressHud.hide();
+
+    print("dataContent:: ${dataContent}");
     if (response.statusCode == 200) {
       // CustomSnackBar(_scaffoldKey,
       //     json.decode(response.body).toString());
       print(json.decode(response.body));
-      return CategoriesModel.fromJson(dataContent);
+      return true;
     } else {
       CustomSnackBar(_scaffoldKey, json.decode(response.body).toString());
       return false;
@@ -72,7 +75,7 @@ class Api {
   }
 
   Future createProduct(GlobalKey<ScaffoldState> _scaffoldKey, String name,
-      String description, String amount, String price) async {
+      String description, String amount, String price,int categoryId) async {
     XsProgressHud.show(context);
     final String apiUrl = baseUrl + createProductLink;
     var data = {
@@ -80,7 +83,7 @@ class Api {
       "description": description,
       "amount": amount,
       "price": price,
-      "category_id": "31"
+      "category_id": categoryId
     };
     var userToJson = json.encode(data);
     final response = await http.post(
@@ -90,6 +93,9 @@ class Api {
     );
     Map<String, dynamic> dataContent = json.decode(response.body);
     XsProgressHud.hide();
+
+    print('dataContent"" ${dataContent}');
+    print('dataContent"" ${data}');
     if (response.statusCode == 200) {
       // CustomSnackBar(_scaffoldKey,
       //     json.decode(response.body).toString());
