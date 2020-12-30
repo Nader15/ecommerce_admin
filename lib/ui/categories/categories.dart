@@ -1,11 +1,12 @@
 import 'package:ecommerce_admin/ApiFunctions/Api.dart';
 import 'package:ecommerce_admin/model/categories_model.dart' as category;
-import 'file:///C:/Users/nader/AndroidStudioProjects/GitHub/ecommerce_admin/lib/add_category.dart';
-import 'package:ecommerce_admin/ui/subcategories/category_products.dart';
+ import 'package:ecommerce_admin/ui/subcategories/category_products.dart';
 import 'package:ecommerce_admin/utils/colors_file.dart';
 import 'package:ecommerce_admin/utils/navigator.dart';
 import 'package:flutter/material.dart';
 import 'package:xs_progress_hud/xs_progress_hud.dart';
+
+import '../../add_category.dart';
 
 class Categories extends StatefulWidget {
   @override
