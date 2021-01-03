@@ -8,6 +8,7 @@ import 'package:ecommerce_admin/utils/colors_file.dart';
 import 'package:ecommerce_admin/utils/global_vars.dart';
 import 'package:ecommerce_admin/utils/navigator.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 
 class CategoryProducts extends StatefulWidget {
   categoryModel.Success success;
@@ -35,7 +36,9 @@ class _CategoryProductsState extends State<CategoryProducts> {
   }
 
   gettingData() {
+
     setState(() {
+      categoryProductsList=List();
       Api(context)
           .categoryProductsApi(_scaffoldKey, widget.success.id)
           .then((value) {
@@ -101,7 +104,34 @@ class _CategoryProductsState extends State<CategoryProducts> {
                   crossAxisSpacing: .5,
                 ),
                 itemBuilder: (context, index) {
-                  return Products(index);
+                  return Slidable(
+                      actionPane: SlidableDrawerActionPane(),
+                      actions: <Widget>[
+                        IconSlideAction(
+
+                          onTap: () {
+                            Api(context)
+                                .removeProduct(
+                                _scaffoldKey, categoryProductsList[index].id)
+                                .then((value) {
+
+                              gettingData();
+                            });
+                          },
+                          caption: 'delete',
+                          foregroundColor: Colors.white,
+                          color: Colors.white,
+                          iconWidget: Container(
+
+                              child: Icon(
+                                Icons.delete_outline,
+                                color: Colors.redAccent,
+                                size: 25,
+                              )),
+                        ),
+                      ],
+
+                      child: Products(index));
                 },
               ),
             ),

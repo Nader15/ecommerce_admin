@@ -100,29 +100,29 @@ class _AddProductState extends State<AddProduct> {
                                   color: Color(0xffb8c3cb),),),
                             ),
                           ),
-                          SizedBox(height: 20),
-                          Text(
-                            "Add Product Description",
-                            style:
-                            TextStyle(color: Colors.black,fontSize: 20,),
-                          ),
-                          SizedBox(height: 10),
-                          SizedBox(
-                            width:
-                            MediaQuery.of(context).size.width ,
-                            child: TextFormField(
-                              style: TextStyle(color: blackColor),
-                              cursorColor: primaryAppColor,
-                              controller: description,
-                              keyboardType: TextInputType.name,
-                              validator: validateDescription,
-                              decoration: InputDecoration(
-                                  fillColor:
-                                  Colors.grey,
-                                  hintText: 'Product Description',
-                                  hintStyle: TextStyle(
-                                      color: Color(0xffb8c3cb))),
-                            ),),
+                          // SizedBox(height: 20),
+                          // Text(
+                          //   "Add Product Description",
+                          //   style:
+                          //   TextStyle(color: Colors.black,fontSize: 20,),
+                          // ),
+                          // SizedBox(height: 10),
+                          // SizedBox(
+                          //   width:
+                          //   MediaQuery.of(context).size.width ,
+                          //   child: TextFormField(
+                          //     style: TextStyle(color: blackColor),
+                          //     cursorColor: primaryAppColor,
+                          //     controller: description,
+                          //     keyboardType: TextInputType.name,
+                          //     validator: validateDescription,
+                          //     decoration: InputDecoration(
+                          //         fillColor:
+                          //         Colors.grey,
+                          //         hintText: 'Product Description',
+                          //         hintStyle: TextStyle(
+                          //             color: Color(0xffb8c3cb))),
+                          //   ),),
                           // SizedBox(height: 20),
                           // Text(
                           //   "Add Amount",
@@ -195,7 +195,7 @@ class _AddProductState extends State<AddProduct> {
                               _validateInputs();
                               if (formKey.currentState.validate()) {
                                 Api(context)
-                                    .createProduct(_scaffoldKey,name.text,description.text,price.text,widget.categoryId)
+                                    .createProduct(_scaffoldKey,name.text,"descriptiondd",price.text,widget.categoryId)
                                     .then((value) {
                                   navigateAndClearStack(context, Categories());
                                 });
