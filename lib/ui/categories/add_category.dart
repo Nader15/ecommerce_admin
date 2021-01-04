@@ -102,28 +102,28 @@ class _AddCategoryState extends State<AddCategory> {
                         ),
                       ),
                       SizedBox(height: 20),
-                      Text(
-                        "Add Category Description",
-                        style:
-                        TextStyle(color: Colors.black,fontSize: 20,),
-                      ),
-                      SizedBox(height: 10),
-                      SizedBox(
-                        width:
-                        MediaQuery.of(context).size.width ,
-                        child: TextFormField(
-                          style: TextStyle(color: blackColor),
-                          cursorColor: primaryAppColor,
-                          controller: description,
-                          keyboardType: TextInputType.name,
-                          validator: validateDescription,
-                          decoration: InputDecoration(
-                              fillColor:
-                              Colors.grey,
-                              hintText: 'Category Description',
-                              hintStyle: TextStyle(
-                                  color: Color(0xffb8c3cb))),
-                        ),)
+                      // Text(
+                      //   "Add Category Description",
+                      //   style:
+                      //   TextStyle(color: Colors.black,fontSize: 20,),
+                      // ),
+                      // SizedBox(height: 10),
+                      // SizedBox(
+                      //   width:
+                      //   MediaQuery.of(context).size.width ,
+                      //   child: TextFormField(
+                      //     style: TextStyle(color: blackColor),
+                      //     cursorColor: primaryAppColor,
+                      //     controller: description,
+                      //     keyboardType: TextInputType.name,
+                      //     validator: validateDescription,
+                      //     decoration: InputDecoration(
+                      //         fillColor:
+                      //         Colors.grey,
+                      //         hintText: 'Category Description',
+                      //         hintStyle: TextStyle(
+                      //             color: Color(0xffb8c3cb))),
+                      //   ),)
                     ],
                   ),
                   SizedBox(height: 60,),
@@ -151,7 +151,7 @@ class _AddCategoryState extends State<AddCategory> {
                           if (formKey.currentState.validate()) {
 
                             Api(context)
-                                .createCategory(scafoldState,name.text,description.text)
+                                .createCategory(scafoldState,name.text,"ffewfwe")
                                 .then((value) {
                               navigateAndClearStack(context, Categories());
                             });
