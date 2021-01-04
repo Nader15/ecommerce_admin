@@ -207,7 +207,6 @@ class _CategoriesState extends State<Categories> {
                   image: NetworkImage(
                       categoriesList[index].logo==null?
                       "https://forums.oscommerce.com/uploads/monthly_2017_12/C_member_309126.png"
-
                   : dataBaseUrl+  categoriesList[index].logo
                   ),
                   fit: BoxFit.cover,

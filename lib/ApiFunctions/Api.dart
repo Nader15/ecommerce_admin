@@ -75,7 +75,7 @@ class Api {
   }
 
   Future createProduct(GlobalKey<ScaffoldState> _scaffoldKey, String name,
-      String description, String price,int categoryId) async {
+      String description, String price,int categoryId,String name_ar) async {
     XsProgressHud.show(context);
     final String apiUrl = baseUrl + createProductLink;
     var data = {
@@ -83,7 +83,8 @@ class Api {
       "description": description,
       "amount": "9999999",
       "price": price,
-      "category_id": categoryId
+      "category_id": categoryId,
+      "name_ar": name_ar,
     };
     var userToJson = json.encode(data);
     final response = await http.post(

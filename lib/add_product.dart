@@ -37,6 +37,7 @@ class _AddProductState extends State<AddProduct> {
   var description = TextEditingController();
   // var amount = TextEditingController();
   var price = TextEditingController();
+  var name_ar = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -79,7 +80,7 @@ class _AddProductState extends State<AddProduct> {
                         CrossAxisAlignment.start,
                         children: [
                           Text(
-                            "Add Product Name",
+                            "Add Product English Name",
                             style:
                             TextStyle(color: Colors.black,fontSize: 20,),
                           ),
@@ -95,7 +96,30 @@ class _AddProductState extends State<AddProduct> {
                               decoration: InputDecoration(
                                 fillColor:
                                 Colors.grey,
-                                hintText: 'Product Name',
+                                hintText: 'English Name',
+                                hintStyle: TextStyle(
+                                  color: Color(0xffb8c3cb),),),
+                            ),
+                          ),
+                          SizedBox(height: 20,),
+                          Text(
+                            "Add Product Arabic Name",
+                            style:
+                            TextStyle(color: Colors.black,fontSize: 20,),
+                          ),
+                          SizedBox(height: 10),
+                          SizedBox(
+                            width: MediaQuery.of(context).size.width,
+                            child: TextFormField(
+                              style: TextStyle(color: blackColor),
+                              cursorColor: primaryAppColor,
+                              controller: name_ar,
+                              keyboardType: TextInputType.name,
+                              validator: validateName,
+                              decoration: InputDecoration(
+                                fillColor:
+                                Colors.grey,
+                                hintText: 'Arabic Name',
                                 hintStyle: TextStyle(
                                   color: Color(0xffb8c3cb),),),
                             ),
@@ -195,7 +219,7 @@ class _AddProductState extends State<AddProduct> {
                               _validateInputs();
                               if (formKey.currentState.validate()) {
                                 Api(context)
-                                    .createProduct(_scaffoldKey,name.text,description.text,price.text,widget.categoryId)
+                                    .createProduct(_scaffoldKey,name.text,description.text,price.text,widget.categoryId,name_ar.text)
                                     .then((value) {
                                   navigateAndClearStack(context, Categories());
                                 });
