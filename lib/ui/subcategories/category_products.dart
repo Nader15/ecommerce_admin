@@ -162,7 +162,7 @@ class _CategoryProductsState extends State<CategoryProducts> {
             )),
       ),
       title: Text(
-        "${categoryProductsList[index].name}",
+        "${categoryProductsList[index].namear}",
         style: TextStyle(fontSize: 18, color: black),
       ),
       subtitle: Row(

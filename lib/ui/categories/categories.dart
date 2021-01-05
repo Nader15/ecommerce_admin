@@ -33,6 +33,7 @@ class _CategoriesState extends State<Categories> {
   gettingData() {
     setState(() {
       Api(context).categoriesApi(_scaffoldKey).then((value) {
+        categoriesList=List();
         categoriesModel = value;
         categoriesModel.success.forEach((element) {
           setState(() {
@@ -42,6 +43,79 @@ class _CategoriesState extends State<Categories> {
         categoriesList=categoriesList.reversed.toList();
       });
     });
+  }
+
+  Future<bool>removeCategory(BuildContext context,int categoryId) async {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        content: Container(
+          height: 120,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: <Widget>[
+              ListTile(
+                title: Text(
+                  "Are you sure to delete this category",
+                  style: TextStyle(fontFamily: "BoutrosAsma_Regular"),
+                  textAlign: TextAlign.center,
+                ),
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: <Widget>[
+                  GestureDetector(
+                    child: Container(
+                        padding: EdgeInsets.only(
+                            left: 20, right: 20, top: 5, bottom: 5),
+                        decoration: BoxDecoration(
+                          color: Colors.red,
+                          borderRadius: BorderRadius.all(Radius.circular(12.0)),
+                          border: Border.all(
+                              width: 1,
+                              color: Colors
+                                  .grey //                   <--- border width here
+                          ),
+                        ),
+                        child: Text(
+                          "cancel",
+                          style: TextStyle(color: Colors.white),
+                        )),
+                    onTap: () {
+                    Navigator.of(context).pop();
+                    },
+                  ),
+                  GestureDetector(
+                    child: Container(
+                        padding: EdgeInsets.only(
+                            left: 20, right: 20, top: 5, bottom: 5),
+                        decoration: BoxDecoration(
+                          color: Colors.green,
+                          borderRadius: BorderRadius.all(Radius.circular(12.0)),
+                          border: Border.all(
+                              width: 1,
+                              color: Colors
+                                  .grey //                   <--- border width here
+                          ),
+                        ),
+                        child: Text(
+                          "yes",
+                          style: TextStyle(color: Colors.white),
+                        )),
+                    onTap: () {
+Api(context).removeCategory(_scaffoldKey, categoryId).then((value) {
+  Navigator.of(context).pop();
+  gettingData();
+});                     },
+                  ),
+                ],
+              )
+            ],
+          ),
+        ),
+      ),
+    );
   }
   Future<bool> onWillPop(BuildContext context) async {
     showDialog(
@@ -155,7 +229,12 @@ class _CategoriesState extends State<Categories> {
                           crossAxisSpacing: 20,
                         ),
                         itemBuilder: (context, index) {
-                          return Category(index);
+                          return InkWell(
+
+                              onLongPress: (){
+                                removeCategory(context,categoriesList[index].id);
+                              },
+                              child: Category(index));
                         },
                       ),
                     ),

@@ -80,7 +80,7 @@ class Api {
     final String apiUrl = baseUrl + createProductLink;
     var data = {
       "name": name,
-      "description": description,
+      "description": "description",
       "amount": "9999999",
       "price": price,
       "category_id": categoryId,
@@ -161,6 +161,33 @@ class Api {
     print("baseUrl::: ${baseUrl + "products/delete/$productId"}");
     // final String completeUrl = baseUrl + products;
     final String completeUrl =  baseUrl + "products/delete/$productId";
+
+    final response = await http.post(completeUrl,
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+        },
+        body: json.encode({"user_id": "12321"}));
+    Map<String, dynamic> dataContent = json.decode(response.body);
+    XsProgressHud.hide();
+    if (response.statusCode == 200) {
+      return true;
+    } else if (response.statusCode == 401) {
+      // clearAllData();
+
+      navigateAndClearStack(context, Error401Page());
+    } else {
+      CustomSnackBar(_scaffoldKey, json.decode(response.body).toString());
+      return false;
+    }
+  }
+
+  Future removeCategory(
+      GlobalKey<ScaffoldState> _scaffoldKey, int categoryId) async {
+    XsProgressHud.show(context);
+    print("baseUrl::: ${baseUrl + "categories/delete/$categoryId"}");
+    // final String completeUrl = baseUrl + products;
+    final String completeUrl =  baseUrl + "categories/delete/$categoryId";
 
     final response = await http.post(completeUrl,
         headers: {
