@@ -219,11 +219,7 @@ class _AddProductState extends State<AddProduct> {
                               _validateInputs();
                               if (formKey.currentState.validate()) {
                                 Api(context)
-<<<<<<< HEAD
                                     .createProduct(_scaffoldKey,name.text,description.text,price.text,widget.categoryId,name_ar.text)
-=======
-                                    .createProduct(_scaffoldKey,name.text,"descriptiondd",price.text,widget.categoryId)
->>>>>>> cf18d24dfccceb98c8dad4db5a17387ecef6482a
                                     .then((value) {
                                   navigateAndClearStack(context, Categories());
                                 });
