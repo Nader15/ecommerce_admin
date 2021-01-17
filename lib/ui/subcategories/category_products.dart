@@ -29,16 +29,41 @@ class _CategoryProductsState extends State<CategoryProducts> {
     // TODO: implement initState
     super.initState();
     Future.delayed(Duration(milliseconds: 0), () {
-      gettingData();
+      // gettingData();
+      fetchTen();
+      _scrollController.addListener(() {
+        print(_scrollController.position.pixels);
+        if (_scrollController.position.pixels ==
+            _scrollController.position.maxScrollExtent) {
+          //  Bottom of the page   <----
+          fetchTen();
+        }
+      });
     });
 
 //    showHud();
   }
 
-  gettingData() {
+  ScrollController _scrollController = new ScrollController();
 
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  int _currentMax = 10;
+
+  fetchTen() {
+    for (int i = _currentMax; i < _currentMax + 10; i++) {
+      gettingData();
+    }
+    _currentMax = _currentMax + 10;
+  }
+
+  gettingData() {
     setState(() {
-      categoryProductsList=List();
+      categoryProductsList = List();
       Api(context)
           .categoryProductsApi(_scaffoldKey, widget.success.id)
           .then((value) {
@@ -48,8 +73,7 @@ class _CategoryProductsState extends State<CategoryProducts> {
             categoryProductsList.add(element);
           });
         });
-        categoryProductsList=categoryProductsList.reversed.toList();
-
+        categoryProductsList = categoryProductsList.reversed.toList();
       });
     });
   }
@@ -96,6 +120,7 @@ class _CategoryProductsState extends State<CategoryProducts> {
               width: MediaQuery.of(context).size.width,
               height: MediaQuery.of(context).size.height,
               child: GridView.builder(
+                controller: _scrollController,
                 itemCount: categoryProductsList.length,
                 gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: 1,
@@ -108,13 +133,11 @@ class _CategoryProductsState extends State<CategoryProducts> {
                       actionPane: SlidableDrawerActionPane(),
                       actions: <Widget>[
                         IconSlideAction(
-
                           onTap: () {
                             Api(context)
-                                .removeProduct(
-                                _scaffoldKey, categoryProductsList[index].id)
+                                .removeProduct(_scaffoldKey,
+                                    categoryProductsList[index].id)
                                 .then((value) {
-
                               gettingData();
                             });
                           },
@@ -122,15 +145,13 @@ class _CategoryProductsState extends State<CategoryProducts> {
                           foregroundColor: Colors.white,
                           color: Colors.white,
                           iconWidget: Container(
-
                               child: Icon(
-                                Icons.delete_outline,
-                                color: Colors.redAccent,
-                                size: 25,
-                              )),
+                            Icons.delete_outline,
+                            color: Colors.redAccent,
+                            size: 25,
+                          )),
                         ),
                       ],
-
                       child: Products(index));
                 },
               ),
@@ -151,13 +172,9 @@ class _CategoryProductsState extends State<CategoryProducts> {
         decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(5),
             image: DecorationImage(
-              image: NetworkImage(
-
-                  categoryProductsList[index].photo==null?
-                  "https://forums.oscommerce.com/uploads/monthly_2017_12/C_member_309126.png"
-
-                      : dataBaseUrl+  categoryProductsList[index].photo
-                  ),
+              image: NetworkImage(categoryProductsList[index].photo == null
+                  ? "https://forums.oscommerce.com/uploads/monthly_2017_12/C_member_309126.png"
+                  : dataBaseUrl + categoryProductsList[index].photo),
               fit: BoxFit.cover,
             )),
       ),

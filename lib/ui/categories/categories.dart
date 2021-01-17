@@ -1,6 +1,6 @@
 import 'package:ecommerce_admin/ApiFunctions/Api.dart';
 import 'package:ecommerce_admin/model/categories_model.dart' as category;
- import 'package:ecommerce_admin/ui/subcategories/category_products.dart';
+import 'package:ecommerce_admin/ui/subcategories/category_products.dart';
 import 'package:ecommerce_admin/utils/colors_file.dart';
 import 'package:ecommerce_admin/utils/global_vars.dart';
 import 'package:ecommerce_admin/utils/navigator.dart';
@@ -33,19 +33,19 @@ class _CategoriesState extends State<Categories> {
   gettingData() {
     setState(() {
       Api(context).categoriesApi(_scaffoldKey).then((value) {
-        categoriesList=List();
+        categoriesList = List();
         categoriesModel = value;
         categoriesModel.success.forEach((element) {
           setState(() {
             categoriesList.add(element);
           });
         });
-        categoriesList=categoriesList.reversed.toList();
+        categoriesList = categoriesList.reversed.toList();
       });
     });
   }
 
-  Future<bool>removeCategory(BuildContext context,int categoryId) async {
+  Future<bool> removeCategory(BuildContext context, int categoryId) async {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
@@ -76,14 +76,14 @@ class _CategoriesState extends State<Categories> {
                               width: 1,
                               color: Colors
                                   .grey //                   <--- border width here
-                          ),
+                              ),
                         ),
                         child: Text(
                           "cancel",
                           style: TextStyle(color: Colors.white),
                         )),
                     onTap: () {
-                    Navigator.of(context).pop();
+                      Navigator.of(context).pop();
                     },
                   ),
                   GestureDetector(
@@ -97,17 +97,20 @@ class _CategoriesState extends State<Categories> {
                               width: 1,
                               color: Colors
                                   .grey //                   <--- border width here
-                          ),
+                              ),
                         ),
                         child: Text(
                           "yes",
                           style: TextStyle(color: Colors.white),
                         )),
                     onTap: () {
-Api(context).removeCategory(_scaffoldKey, categoryId).then((value) {
-  Navigator.of(context).pop();
-  gettingData();
-});                     },
+                      Api(context)
+                          .removeCategory(_scaffoldKey, categoryId)
+                          .then((value) {
+                        Navigator.of(context).pop();
+                        gettingData();
+                      });
+                    },
                   ),
                 ],
               )
@@ -117,6 +120,7 @@ Api(context).removeCategory(_scaffoldKey, categoryId).then((value) {
       ),
     );
   }
+
   Future<bool> onWillPop(BuildContext context) async {
     showDialog(
       context: context,
@@ -129,7 +133,7 @@ Api(context).removeCategory(_scaffoldKey, categoryId).then((value) {
             children: <Widget>[
               ListTile(
                 title: Text(
-                 "Are you sure to logOut",
+                  "Are you sure to logOut",
                   style: TextStyle(fontFamily: "BoutrosAsma_Regular"),
                   textAlign: TextAlign.center,
                 ),
@@ -148,7 +152,7 @@ Api(context).removeCategory(_scaffoldKey, categoryId).then((value) {
                               width: 1,
                               color: Colors
                                   .grey //                   <--- border width here
-                          ),
+                              ),
                         ),
                         child: Text(
                           "Exit",
@@ -170,7 +174,7 @@ Api(context).removeCategory(_scaffoldKey, categoryId).then((value) {
                               width: 1,
                               color: Colors
                                   .grey //                   <--- border width here
-                          ),
+                              ),
                         ),
                         child: Text(
                           "Cancel",
@@ -189,27 +193,47 @@ Api(context).removeCategory(_scaffoldKey, categoryId).then((value) {
       ),
     );
   }
+  String message='';
+  _onScrollStart(ScrollMetrics metrics){
+    message = 'Scroll Start';
+    setState(() {
+      print("Scroll Start");
+    });
+  }
+  _onScrollUpdate(ScrollMetrics metrics){
+    message = 'Scroll Update';
+    setState(() {
+      print("Scroll Update");
+    });
+  }
+  _onScrollend(ScrollMetrics metrics){
+    message = 'Scroll End';
+    setState(() {
+      print('Scroll End');
+      print(metrics.pixels);
+    });
+  }
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () => onWillPop(context),
-
       child: Scaffold(
         floatingActionButton: _buildFloatingButton(),
         key: _scaffoldKey,
-
         appBar: AppBar(
           backgroundColor: Colors.white,
           iconTheme: IconThemeData(color: Colors.black),
-
-          centerTitle: true,title: Text("Categories",style: TextStyle(color: Colors.black),),),
-
+          centerTitle: true,
+          title: Text(
+            "Categories",
+            style: TextStyle(color: Colors.black),
+          ),
+        ),
         body: Padding(
           padding: const EdgeInsets.only(top: 20, left: 20, right: 20),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-
               SizedBox(
                 height: 30,
               ),
@@ -220,22 +244,41 @@ Api(context).removeCategory(_scaffoldKey, categoryId).then((value) {
                       ),
                     )
                   : Expanded(
-                      child: GridView.builder(
-                        itemCount: categoriesList.length,
-                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount: 2,
-                          childAspectRatio: 0.70,
-                          mainAxisSpacing: 0.3,
-                          crossAxisSpacing: 20,
-                        ),
-                        itemBuilder: (context, index) {
-                          return InkWell(
+                      child: NotificationListener<ScrollNotification>(
+                        // ignore: missing_return
+                        onNotification: (notification){
+                          if(notification is ScrollStartNotification)
+                            {
+                              _onScrollStart(notification.metrics);
+                            }
 
-                              onLongPress: (){
-                                removeCategory(context,categoriesList[index].id);
-                              },
-                              child: Category(index));
+                          if(notification is ScrollUpdateNotification)
+                          {
+                            _onScrollUpdate(notification.metrics);
+                          }
+
+                          if(notification is ScrollEndNotification)
+                          {
+                            _onScrollend(notification.metrics);
+                          }
                         },
+                        child: GridView.builder(
+                          itemCount: categoriesList.length,
+                          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: 2,
+                            childAspectRatio: 0.70,
+                            mainAxisSpacing: 0.3,
+                            crossAxisSpacing: 20,
+                          ),
+                          itemBuilder: (context, index) {
+                            return InkWell(
+                                onLongPress: () {
+                                  removeCategory(
+                                      context, categoriesList[index].id);
+                                },
+                                child: Category(index));
+                          },
+                        ),
                       ),
                     ),
             ],
@@ -245,10 +288,10 @@ Api(context).removeCategory(_scaffoldKey, categoryId).then((value) {
     );
   }
 
-  Widget _buildFloatingButton(){
+  Widget _buildFloatingButton() {
     return RaisedButton(
-      onPressed: (){
-        navigateAndKeepStack(context,AddCategory());
+      onPressed: () {
+        navigateAndKeepStack(context, AddCategory());
       },
       color: Colors.green,
       elevation: 0,
@@ -258,11 +301,15 @@ Api(context).removeCategory(_scaffoldKey, categoryId).then((value) {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[
-          Text('Add Category',style: TextStyle(color: Colors.white),
+          Text(
+            'Add Category',
+            style: TextStyle(color: Colors.white),
           ),
           SizedBox(width: 10),
           Icon(
-            Icons.add,size: 25.0,color:Colors.white,
+            Icons.add,
+            size: 25.0,
+            color: Colors.white,
           )
         ],
       ),
@@ -283,11 +330,9 @@ Api(context).removeCategory(_scaffoldKey, categoryId).then((value) {
                 color: Colors.green,
                 borderRadius: BorderRadius.circular(15),
                 image: DecorationImage(
-                  image: NetworkImage(
-                      categoriesList[index].logo==null?
-                      "https://forums.oscommerce.com/uploads/monthly_2017_12/C_member_309126.png"
-                  : dataBaseUrl+  categoriesList[index].logo
-                  ),
+                  image: NetworkImage(categoriesList[index].logo == null
+                      ? "https://forums.oscommerce.com/uploads/monthly_2017_12/C_member_309126.png"
+                      : dataBaseUrl + categoriesList[index].logo),
                   fit: BoxFit.cover,
                 )),
           ),
