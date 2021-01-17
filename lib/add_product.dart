@@ -2,7 +2,7 @@ import 'dart:io';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:ecommerce_admin/ApiFunctions/Api.dart';
 import 'package:ecommerce_admin/model/categories_model.dart';
-import 'package:ecommerce_admin/model/category_products_model.dart'as product;
+import 'package:ecommerce_admin/model/category_products_model.dart' as product;
 import 'package:ecommerce_admin/model/category_products_model.dart';
 import 'package:ecommerce_admin/ui/categories/categories.dart';
 import 'package:ecommerce_admin/ui/subcategories/category_products.dart';
@@ -14,7 +14,6 @@ import 'package:image_picker/image_picker.dart';
 class AddProduct extends StatefulWidget {
   int categoryId;
 
-
   AddProduct(this.categoryId);
 
   @override
@@ -22,19 +21,14 @@ class AddProduct extends StatefulWidget {
 }
 
 class _AddProductState extends State<AddProduct> {
-
-
-   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-   GlobalKey<FormState> formKey = GlobalKey<FormState>();
-
-
-
-
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+  GlobalKey<FormState> formKey = GlobalKey<FormState>();
 
   bool _autoValidate = false;
 
   var name = TextEditingController();
   var description = TextEditingController();
+
   // var amount = TextEditingController();
   var price = TextEditingController();
   var name_ar = TextEditingController();
@@ -43,7 +37,6 @@ class _AddProductState extends State<AddProduct> {
   Widget build(BuildContext context) {
     return Scaffold(
         key: _scaffoldKey,
-
         appBar: AppBar(
           iconTheme: IconThemeData(color: Colors.black),
           backgroundColor: Colors.white,
@@ -57,7 +50,6 @@ class _AddProductState extends State<AddProduct> {
               color: Colors.black,
             ),
           ),
-
           title: Text(
             "Add Product",
             style: TextStyle(color: Colors.black),
@@ -69,20 +61,19 @@ class _AddProductState extends State<AddProduct> {
             child: Form(
               key: formKey,
               child: Padding(
-                  padding:const EdgeInsets.only(left: 21, top: 29, right: 21),
+                  padding: const EdgeInsets.only(left: 21, top: 29, right: 21),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-
-
                       Column(
-                        crossAxisAlignment:
-                        CrossAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
                             "Add Product English Name",
-                            style:
-                            TextStyle(color: Colors.black,fontSize: 20,),
+                            style: TextStyle(
+                              color: Colors.black,
+                              fontSize: 20,
+                            ),
                           ),
                           SizedBox(height: 10),
                           SizedBox(
@@ -94,18 +85,23 @@ class _AddProductState extends State<AddProduct> {
                               keyboardType: TextInputType.name,
                               validator: validateName,
                               decoration: InputDecoration(
-                                fillColor:
-                                Colors.grey,
+                                fillColor: Colors.grey,
                                 hintText: 'English Name',
                                 hintStyle: TextStyle(
-                                  color: Color(0xffb8c3cb),),),
+                                  color: Color(0xffb8c3cb),
+                                ),
+                              ),
                             ),
                           ),
-                          SizedBox(height: 20,),
+                          SizedBox(
+                            height: 20,
+                          ),
                           Text(
                             "Add Product Arabic Name",
-                            style:
-                            TextStyle(color: Colors.black,fontSize: 20,),
+                            style: TextStyle(
+                              color: Colors.black,
+                              fontSize: 20,
+                            ),
                           ),
                           SizedBox(height: 10),
                           SizedBox(
@@ -117,11 +113,12 @@ class _AddProductState extends State<AddProduct> {
                               keyboardType: TextInputType.name,
                               validator: validateName,
                               decoration: InputDecoration(
-                                fillColor:
-                                Colors.grey,
+                                fillColor: Colors.grey,
                                 hintText: 'Arabic Name',
                                 hintStyle: TextStyle(
-                                  color: Color(0xffb8c3cb),),),
+                                  color: Color(0xffb8c3cb),
+                                ),
+                              ),
                             ),
                           ),
                           // SizedBox(height: 20),
@@ -173,13 +170,14 @@ class _AddProductState extends State<AddProduct> {
                           SizedBox(height: 20),
                           Text(
                             "Add Price",
-                            style:
-                            TextStyle(color: Colors.black,fontSize: 20,),
+                            style: TextStyle(
+                              color: Colors.black,
+                              fontSize: 20,
+                            ),
                           ),
                           SizedBox(height: 10),
                           SizedBox(
-                            width:
-                            MediaQuery.of(context).size.width ,
+                            width: MediaQuery.of(context).size.width,
                             child: TextFormField(
                               style: TextStyle(color: blackColor),
                               cursorColor: primaryAppColor,
@@ -187,15 +185,17 @@ class _AddProductState extends State<AddProduct> {
                               keyboardType: TextInputType.number,
                               validator: validateprice,
                               decoration: InputDecoration(
-                                  fillColor:
-                                  Colors.grey,
+                                  fillColor: Colors.grey,
                                   hintText: 'product price',
-                                  hintStyle: TextStyle(
-                                      color: Color(0xffb8c3cb))),
-                            ),),
+                                  hintStyle:
+                                      TextStyle(color: Color(0xffb8c3cb))),
+                            ),
+                          ),
                         ],
                       ),
-                      SizedBox(height: 60,),
+                      SizedBox(
+                        height: 60,
+                      ),
                       Container(
                         alignment: Alignment.center,
                         padding: EdgeInsets.only(bottom: 21.0),
@@ -219,31 +219,27 @@ class _AddProductState extends State<AddProduct> {
                               _validateInputs();
                               if (formKey.currentState.validate()) {
                                 Api(context)
-<<<<<<< HEAD
-                                    .createProduct(_scaffoldKey,name.text,description.text,price.text,widget.categoryId,name_ar.text)
-=======
-                                    .createProduct(_scaffoldKey,name.text,"descriptiondd",price.text,widget.categoryId)
->>>>>>> cf18d24dfccceb98c8dad4db5a17387ecef6482a
+                                    .createProduct(
+                                        _scaffoldKey,
+                                        name.text,
+                                        description.text,
+                                        price.text,
+                                        widget.categoryId,
+                                        name_ar.text)
                                     .then((value) {
                                   navigateAndClearStack(context, Categories());
                                 });
-
-
                               }
                             },
                           ),
                         ),
                       ),
                     ],
-                  )
-              ),
+                  )),
             ),
           ),
-        )
-    );
+        ));
   }
-
-
 
   void _validateInputs() {
     if (formKey.currentState.validate()) {
@@ -261,6 +257,7 @@ class _AddProductState extends State<AddProduct> {
     else
       return null;
   }
+
   String validateDescription(String value) {
     if (value.length == 0)
       return 'enter product Description';
